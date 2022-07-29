@@ -45,3 +45,15 @@ body {
 .flash {
     background-color: red;
 }
+
+#big-timer {
+    font-size: 2rem;
+    border: 1px solid white;
+    padding: 10px;
+    width: auto;
+    display: inline-block;
+}
+
+.small-title {
+    font-size: 1rem;
+}

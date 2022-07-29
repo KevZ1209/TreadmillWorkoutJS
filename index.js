@@ -1,4 +1,4 @@
-const workout = [
+var workout = [
     {
         speed: 4,
         incline: 0.5,
@@ -96,6 +96,25 @@ const workout = [
     }
 ];
 
+// testing purposes
+// workout = [
+//     {
+//         speed: 5,
+//         incline: 0.5,
+//         time: 3
+//     },
+//     {
+//         speed: 7,
+//         incline: 0.5,
+//         time: 6
+//     },
+//     {
+//         speed: 3,
+//         incline: 0.5,
+//         time: 3
+//     }
+// ]
+
 var index = 0;
 
 var hasStarted = false;
@@ -104,9 +123,13 @@ var isPaused = false;
 
 var totalTime = 0;
 
+var timerID;
+
 for (let index in workout) {
     totalTime += workout[index].time;
 }
+
+const totalTimeHolder = totalTime;
 
 function convertTime(secs) {
     const minutes = Math.floor(secs / 60);
@@ -127,6 +150,10 @@ function convertTime(secs) {
 function startWorkout() {
     if (!hasStarted) {
         hasStarted = true;
+        totalTime = totalTimeHolder;
+        startTimer();
+        document.querySelector("#main-title").textContent = "TIME LEFT";
+        document.querySelector("#main-title").classList.add("small-title");
         document.querySelector("h3").innerHTML = "NEXT UP";
         document.querySelector("#actionbutton").innerHTML = "Pause";
         document.querySelector("#speednow").innerHTML = "SPEED: " + workout[0].speed + " MPH";
@@ -138,6 +165,15 @@ function startWorkout() {
         isPaused = !isPaused;
         document.querySelector("#actionbutton").innerHTML = isPaused ? "Continue" : "Pause";
     }
+}
+
+function startTimer() {
+    timerID = setInterval(() => {
+        if (isPaused === false) {
+            totalTime--;
+        }
+        document.querySelector("#big-timer").textContent = convertTime(totalTime);
+    }, 1000)
 }
 
 function flashScreen() {
@@ -156,7 +192,7 @@ function nextAction() {
     }, 450) 
 
     if (index === workout.length - 1) {
-        doAction(next, next.time);
+        doAction(next, next.time - 1);
         document.querySelector("#speednext").innerHTML = "";
         document.querySelector("#inclinenext").innerHTML = "";
         document.querySelector("#timenext").textContent = "";
@@ -165,10 +201,17 @@ function nextAction() {
         hasStarted = false;
         index = 0
         document.querySelector("#actionbutton").innerHTML = "Reset";
-        alert("Workout Completed");
+        document.querySelector("#speednow").innerHTML = "";
+        document.querySelector("#inclinenow").innerHTML = "";
+        document.querySelector("#timenow").textContent = "";
+        document.querySelector("#big-timer").textContent = "You've completed the workout!";
+        document.querySelector("#main-title").textContent = "TREADMILL WORKOUT";
+        document.querySelector("h3").innerHTML = "";
+        document.querySelector("#main-title").classList.remove("small-title");
+        clearInterval(timerID);
     }
     else {
-        doAction(next, next.time);
+        doAction(next, next.time - 1);
         const nextAfter = workout[index + 1];
         document.querySelector("#speednext").innerHTML = "SPEED: " + nextAfter.speed + " MPH";
         document.querySelector("#inclinenext").innerHTML = "INCLINE: " + nextAfter.incline + "%";
